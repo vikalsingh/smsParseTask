@@ -4,20 +4,22 @@ import { Button, Text } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { addTransaction } from '../store/transactionsSlice';
+import { useAppDispatch } from '../store/hooks';
 
 // import { requestSmsPermission } from '../services/smsReader';
-// import { parseSmsToTransaction } from '../services/smsParser';
+import { parseSmsToTransaction } from '../services/smsParser';
 
 export default function OnboardingScreen() {
   const navigation = useNavigation<any>();
-//   const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
 
   const handleGetStarted = async () => {
     setLoading(true);
 
     // const granted = await requestSmsPermission();
-    const granted = false;
+    const granted = true;
 
     if (granted) {
       // TODO: Replace this with actual SMS reading
@@ -33,9 +35,11 @@ export default function OnboardingScreen() {
       ];
 
       for (const sms of sampleSmsList) {
-        // const txn = parseSmsToTransaction(sms.body, sms.sender);
+        const txn = parseSmsToTransaction(sms.body, sms.sender);
+        console.log('Parsed transaction:', txn);
         if (txn) {
-        //   await dispatch(addTransaction(txn));
+
+          await dispatch(addTransaction(txn));
         }
       }
     }
@@ -43,6 +47,11 @@ export default function OnboardingScreen() {
     await AsyncStorage.setItem('hasOnboarded', 'true');
     navigation.replace('Dashboard');
   };
+  const navigateToDashboard = async () => {
+    setLoading(true);
+    await AsyncStorage.setItem('hasOnboarded', 'true');
+    navigation.replace('Dashboard');
+  }
 
   return (
     <SafeAreaView style={styles.safeView}>
@@ -57,11 +66,20 @@ export default function OnboardingScreen() {
 
       <Button
         mode="contained"
-        onPress={handleGetStarted}
+        onPress={navigateToDashboard}
         loading={loading}
         disabled={loading}
       >
         Get Started
+      </Button>
+      <Button
+        mode="contained"
+        onPress={handleGetStarted}
+        loading={loading}
+        disabled={loading}
+        style={{ marginTop: 10 }}
+      >
+        Parse Sample SMS
       </Button>
     </View>
     </SafeAreaView>
