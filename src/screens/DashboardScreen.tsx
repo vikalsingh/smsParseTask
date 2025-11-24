@@ -31,7 +31,7 @@ export default function DashboardScreen() {
   }));
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.safeView}>
 
         <View style={styles.container}>
         <Text variant="headlineMedium">Dashboard</Text>
@@ -77,7 +77,8 @@ export default function DashboardScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  label: { marginTop: 10, fontWeight: 'bold' },
-  card: { marginTop: 8 },
+    safeView: { flex: 1 },
+    container: { flex: 1, padding: 16 },
+    label: { marginTop: 10, fontWeight: 'bold' },
+    card: { marginTop: 8 },
 });

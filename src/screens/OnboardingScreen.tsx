@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // import { requestSmsPermission } from '../services/smsReader';
 // import { parseSmsToTransaction } from '../services/smsParser';
@@ -44,6 +45,7 @@ export default function OnboardingScreen() {
   };
 
   return (
+    <SafeAreaView style={styles.safeView}>
     <View style={styles.container}>
       <Text variant="headlineMedium" style={{ marginBottom: 10 }}>
         Welcome 👋
@@ -62,14 +64,16 @@ export default function OnboardingScreen() {
         Get Started
       </Button>
     </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+    safeView: { flex: 1 },
+    container: {
+        flex: 1,
+        padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
