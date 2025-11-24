@@ -17,6 +17,6 @@ export interface Transaction {
   date: string;
   bankName: string;
   description: string;
-  category: Category;
+  category: string;
   source: TransactionSource;
 }

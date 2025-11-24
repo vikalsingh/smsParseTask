@@ -1,15 +1,16 @@
-// src/screens/DashboardScreen.tsx
-
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { Button, Text, Card } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import * as Victory from 'victory-native';
 import { useSelector } from 'react-redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAppSelector } from '../store/hooks';
 
 export default function DashboardScreen() {
   const navigation = useNavigation<any>();
-  const transactions = useSelector((state: any) => state.transactions.items);
+  const transactions = useAppSelector((state: any) => state.transactions.items);
+  console.log('Transactions from store:', transactions);
 
   const monthlyExpenses = transactions
     .filter(t => t.type === 'debit')
@@ -30,45 +31,48 @@ export default function DashboardScreen() {
   }));
 
   return (
-    <View style={styles.container}>
-      <Text variant="headlineMedium">Dashboard</Text>
+    <SafeAreaView style={styles.container}>
 
-      <Text style={styles.label}>Monthly Expenses: ₹{monthlyExpenses}</Text>
+        <View style={styles.container}>
+        <Text variant="headlineMedium">Dashboard</Text>
 
-      {pieData.length > 0 && (
-        <Victory.VictoryPie data={pieData} colorScale="cool" />
-      )}
+        <Text style={styles.label}>Monthly Expenses: ₹{monthlyExpenses}</Text>
 
-      <Text style={[styles.label, { marginTop: 10 }]}>Last 5 Transactions</Text>
+        {/* {pieData.length > 0 && (
+            // <Victory.VictoryPie data={pieData} colorScale="cool" />
+        )} */}
 
-      <FlatList
-        data={lastFive}
-        keyExtractor={item => String(item.id)}
-        renderItem={({ item }) => (
-          <Card style={styles.card}>
-            <Card.Content>
-              <Text>{item.description}</Text>
-              <Text>₹{item.amount}</Text>
-            </Card.Content>
-          </Card>
-        )}
-      />
+        <Text style={[styles.label, { marginTop: 10 }]}>Last 5 Transactions</Text>
 
-      <Button
-        mode="contained"
-        onPress={() => navigation.navigate('AddExpense')}
-        style={{ marginTop: 10 }}
-      >
-        Add Expense
-      </Button>
+        <FlatList
+            data={lastFive}
+            keyExtractor={item => String(item.id)}
+            renderItem={({ item }) => (
+            <Card style={styles.card}>
+                <Card.Content>
+                <Text>{item.description}</Text>
+                <Text>₹{item.amount}</Text>
+                </Card.Content>
+            </Card>
+            )}
+        />
 
-      <Button
-        onPress={() => navigation.navigate('History')}
-        style={{ marginTop: 10 }}
-      >
-        View All Transactions
-      </Button>
-    </View>
+        <Button
+            mode="contained"
+            onPress={() => navigation.navigate('AddExpense')}
+            style={{ marginTop: 10 }}
+        >
+            Add Expense
+        </Button>
+
+        <Button
+            onPress={() => navigation.navigate('History')}
+            style={{ marginTop: 10 }}
+        >
+            View All Transactions
+        </Button>
+        </View>
+    </SafeAreaView>
   );
 }
 

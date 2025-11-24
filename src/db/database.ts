@@ -33,16 +33,16 @@ export const createTables = async (db: SQLiteDatabase) => {
   `);
 };
 
-// export const getAllTransactions = async (db: SQLiteDatabase) => {
-//   const results = await db.executeSql('SELECT * FROM transactions ORDER BY date DESC');
-//   const items: any[] = [];
-//   results.forEach(result => {
-//     for (let i = 0; i < result.rows.length; i++) {
-//       items.push(result.rows.item(i));
-//     }
-//   });
-//   return items;
-// };
+export const getAllTransactions = async (db: SQLiteDatabase) => {
+  const results = await db.executeSql('SELECT * FROM transactions ORDER BY date DESC');
+  const items: any[] = [];
+  results.forEach(result => {
+    for (let i = 0; i < result.rows.length; i++) {
+      items.push(result.rows.item(i));
+    }
+  });
+  return items;
+};
 
 export const insertTransaction = async (
   db: SQLiteDatabase,
