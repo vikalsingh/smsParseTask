@@ -38,6 +38,12 @@ local.properties
 # node.js
 #
 node_modules/
+android/
+ios/
+.expo/
+.idea/
+.vscode/
+.env
 npm-debug.log
 yarn-error.log
 
