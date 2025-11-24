@@ -15,6 +15,10 @@ export default function DashboardScreen() {
     .filter(t => t.type === 'debit')
     .reduce((sum, t) => sum + t.amount, 0);
 
+    const totalBalance = transactions
+        .filter(t => t.type === 'credit')
+        .reduce((sum, t) => sum + t.amount, 0);
+
   const lastFive = transactions.slice(0, 5);
 
   const categoryMap: Record<string, number> = {};
@@ -57,8 +61,10 @@ export default function DashboardScreen() {
         <View style={styles.container}>
         <Text variant="headlineMedium">Dashboard</Text>
 
-        <Text style={styles.label}>Monthly Expenses: ₹{monthlyExpenses}</Text>
-
+        <View style={styles.summarySection}>
+            <Text style={styles.label}>Monthly Expenses: ₹{monthlyExpenses}</Text>
+            <Text style={styles.label}>Bank Balance: ₹{totalBalance}</Text>
+        </View>
         {pieData.length > 0 ? (
         <View style={styles.chartSection}>
           <Text style={styles.sectionTitle}>Category-wise Spending</Text>
@@ -88,8 +94,6 @@ export default function DashboardScreen() {
       ) : (
         <Text style={{ marginTop: 16 }}>No expense data yet.</Text>
       )}
-
-       
 
         <Text style={[styles.label, { marginTop: 10 }]}>Last 5 Transactions</Text>
 
@@ -128,7 +132,7 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
     safeView: { flex: 1 },
     container: { flex: 1, padding: 16 },
-    label: { marginTop: 10, fontWeight: 'bold' },
+    label: { fontWeight: 'bold' },
     card: { marginTop: 8 },
      chartSection: {
     marginBottom: 8,
@@ -164,4 +168,13 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 13,
   },
+    summarySection: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 8,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 8,
+    },
 });
