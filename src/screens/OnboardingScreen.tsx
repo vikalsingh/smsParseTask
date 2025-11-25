@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -7,19 +7,32 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { addTransaction } from '../store/transactionsSlice';
 import { useAppDispatch } from '../store/hooks';
 
-// import { requestSmsPermission } from '../services/smsReader';
+import { requestSmsPermission } from '../services/smsReader';
 import { parseSmsToTransaction } from '../services/smsParser';
+import { useSmsListener } from '../hooks/useSmsListener';
 
 export default function OnboardingScreen() {
   const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
+  const { startListening, lastMessage, isListening, error } = useSmsListener();
 
+  useEffect(() => {
+    if (lastMessage) {
+      const txn = parseSmsToTransaction(lastMessage, 'UNKNOWN');
+      Alert.alert('SMS Parsed', `Parsed transaction: ${JSON.stringify(txn)}`);
+      if (txn) {
+        dispatch(addTransaction(txn));
+      }
+    }
+  }, [lastMessage, dispatch]);
+  
   const handleGetStarted = async () => {
     setLoading(true);
 
-    // const granted = await requestSmsPermission();
-    const granted = true;
+    const granted = await requestSmsPermission();
+    console.warn('SMS Permission granted:', granted);
+    // const granted = true;
 
     if (granted) {
       // TODO: Replace this with actual SMS reading
@@ -81,6 +94,16 @@ export default function OnboardingScreen() {
       >
         Parse Sample SMS
       </Button>
+      <Button style={{ marginTop: 10 }} mode="contained" onPress={startListening} loading={isListening}>
+        {isListening ? 'Waiting for SMS...' : 'Start SMS Listener'}
+      </Button>
+      {lastMessage && (
+        <Text style={{ marginTop: 16, color: 'black' }}>Last SMS: {lastMessage}</Text>
+      )}
+
+      {error && (
+        <Text style={{ marginTop: 16, color: 'red' }}>Error: {error}</Text>
+      )}
     </View>
     </SafeAreaView>
   );
